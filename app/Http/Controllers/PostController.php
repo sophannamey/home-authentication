@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -14,6 +15,7 @@ class PostController extends Controller
     public function index()
     {
         //
+        return Student::paginate(3);
     }
 
     /**
@@ -25,6 +27,13 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
+        $post = new Post();
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->save();
+
+        return response()->json(["message" => "Create Post"]);
+        
     }
 
     /**
@@ -36,6 +45,7 @@ class PostController extends Controller
     public function show($id)
     {
         //
+        return Student::findOrFail($id);
     }
 
     /**
@@ -48,6 +58,12 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $post = Post::findOrFail($id);
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->save();
+
+        return response()->json(["message" => "Update Post"]);
     }
 
     /**
@@ -59,5 +75,11 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
+        $isDeleted = Post::destroy($id);
+        if($isDeleted == 1){
+            return response()->json(['message' => 'deleted'],200);
+        }else{
+            return response()->json(['message' => 'ID NOT FOUND'],404);
+        }
     }
 }
